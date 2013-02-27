@@ -100,8 +100,11 @@ add_filter('xrds_simple', 'xrds_atompub_service');
  * Print HTML meta tags, advertising the location of the XRDS document.
  */
 function xrds_meta() {
-	echo '<meta http-equiv="X-XRDS-Location" content="'.get_bloginfo('url').'/?xrds" />'."\n";
-	echo '<meta http-equiv="X-Yadis-Location" content="'.get_bloginfo('url').'/?xrds" />'."\n";
+	global $wp;
+	$current_url = home_url(add_query_arg(array(),$wp->request));
+	$xrds_url = add_query_arg( 'xrds', '', $current_url );
+	echo '<meta http-equiv="X-XRDS-Location" content="'.$xrds_url.'" />'."\n";
+	echo '<meta http-equiv="X-Yadis-Location" content="'.$xrds_url.'" />'."\n";
 }
 
 
@@ -228,8 +231,11 @@ function xrds_parse_request($wp) {
 		echo xrds_write();
 		exit;
 	} else {
-		@header('X-XRDS-Location: '.get_bloginfo('url').'/?xrds');
-		@header('X-Yadis-Location: '.get_bloginfo('url').'/?xrds');
+		global $wp;
+		$current_url = home_url(add_query_arg(array(),$wp->request));
+		$xrds_url = add_query_arg( 'xrds', '', $current_url );
+		@header('X-XRDS-Location: '.$xrds_url);
+		@header('X-Yadis-Location: '.$xrds_url);
 	}
 }
 
